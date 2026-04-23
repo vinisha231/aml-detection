@@ -1,0 +1,43 @@
+# ─────────────────────────────────────────────────────────
+# requirements.txt — all Python packages this project needs
+# Install with: pip install -r requirements.txt
+# ─────────────────────────────────────────────────────────
+
+# Web framework — FastAPI creates our REST API endpoints
+fastapi==0.111.0
+
+# ASGI server — runs FastAPI (like how Apache runs PHP)
+uvicorn[standard]==0.29.0
+
+# Database toolkit — SQLAlchemy talks to our SQLite database
+sqlalchemy==2.0.30
+
+# Graph analysis — NetworkX does all graph math (PageRank, cycles, etc.)
+networkx[default]==3.3
+
+# Faker — generates realistic fake names, emails, addresses for our accounts
+faker==24.11.0
+
+# Numpy — fast numerical operations (z-scores, random distributions)
+numpy==1.26.4
+
+# Scipy — advanced statistics (used by NetworkX internally)
+scipy==1.13.0
+
+# Pydantic — data validation for API request/response models
+pydantic==2.7.1
+
+# Python-dateutil — makes working with dates much easier
+python-dateutil==2.9.0
+
+# Tqdm — progress bars for long-running operations (generating 100k transactions)
+tqdm==4.66.4
+
+# Pandas — data manipulation for evaluation scripts
+pandas==2.2.2
+
+# Matplotlib — graph visualization (used in evaluation scripts)
+matplotlib==3.9.0
+
+# Scikit-learn — metrics like precision, recall for evaluation
+scikit-learn==1.4.2
