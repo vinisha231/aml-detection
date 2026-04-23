@@ -1,0 +1,33 @@
+# Dockerfile.backend
+# ─────────────────────────────────────────────────────────────────────────────
+# Builds a Docker image for the FastAPI backend.
+#
+# What is a Dockerfile?
+#   A Dockerfile is a recipe for building a Docker image.
+#   Each line is an instruction. Docker executes them in order.
+#   The result is an isolated "container" with everything needed to run the app.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Start from the official Python 3.11 image (slim = smaller image size)
+FROM python:3.11-slim
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy requirements first (Docker caches this layer — speeds up rebuilds)
+COPY backend/requirements.txt ./requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire project into the container
+COPY . .
+
+# Create the data directory (for SQLite database)
+RUN mkdir -p data
+
+# Expose port 8000 (where FastAPI listens)
+EXPOSE 8000
+
+# Start the FastAPI server when the container starts
+CMD ["uvicorn", "backend.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

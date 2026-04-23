@@ -1,0 +1,63 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# docker-compose.yml
+#
+# What is Docker Compose?
+#   Docker Compose lets you run multiple services (frontend + backend) with
+#   one command: docker-compose up
+#
+# Each "service" runs in its own isolated container:
+#   - backend:  FastAPI Python API
+#   - frontend: React Vite dev server
+#
+# Usage (once Docker is installed):
+#   docker-compose up          → start both services
+#   docker-compose up backend  → start only the backend
+#   docker-compose down        → stop all services
+#
+# NOTE: For portfolio development, just use 'make api' and 'make frontend' directly.
+# Docker is mainly useful for deployment or sharing with others.
+# ─────────────────────────────────────────────────────────────────────────────
+
+version: '3.8'
+
+services:
+
+  # ── FastAPI Backend ──────────────────────────────────────────────────────────
+  backend:
+    # Build from the project root using Dockerfile.backend
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+
+    # Port mapping: host:container
+    # Visit http://localhost:8000 to access the API
+    ports:
+      - "8000:8000"
+
+    # Mount the data directory so the SQLite DB persists between container restarts
+    volumes:
+      - ./data:/app/data
+
+    # Environment variables available inside the container
+    environment:
+      - DB_PATH=/app/data/aml.db
+      - PYTHONPATH=/app
+
+    # Command to start the server
+    command: uvicorn backend.api.main:app --host 0.0.0.0 --port 8000
+
+  # ── React Frontend ────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+
+    ports:
+      - "5173:5173"
+
+    # Wait for backend to be ready before starting
+    depends_on:
+      - backend
+
+    environment:
+      - VITE_API_URL=http://localhost:8000
