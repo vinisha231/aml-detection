@@ -33,6 +33,10 @@ export default defineConfig({
       '/queue':        'http://localhost:8000',
       '/accounts':     'http://localhost:8000',
       '/dispositions': 'http://localhost:8000',
+      '/analytics':    'http://localhost:8000',
+      '/search':       'http://localhost:8000',
+      '/export':       'http://localhost:8000',
+      '/health':       'http://localhost:8000',
     },
   },
 });
