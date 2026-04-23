@@ -126,4 +126,4 @@ Outputs: Precision@20, Recall@100, False Positive Rate per rule.
 
 ---
 
-* All data is synthetic. No real financial data used.*
+*All data is synthetic. No real financial data used.*
