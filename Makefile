@@ -88,3 +88,33 @@ clean:
 	@echo "Removing generated database..."
 	rm -f $(DB)
 	@echo "Database removed. Run 'make generate' to regenerate."
+
+# Reset database to a clean state and re-seed system accounts
+reset-db:
+	@echo "Resetting database (all data will be lost)..."
+	$(PYTHON) scripts/reset_db.py --confirm
+
+# Export ground truth labels for evaluation
+export-truth:
+	@echo "Exporting ground truth labels..."
+	$(PYTHON) scripts/export_ground_truth.py
+
+# Run the performance benchmark
+benchmark:
+	@echo "Running pipeline benchmark..."
+	$(PYTHON) scripts/benchmark.py
+
+# Run tests with coverage report
+test-cov:
+	@echo "Running tests with coverage..."
+	$(PYTHON) -m pytest backend/tests/ -v --tb=short --cov=backend --cov-report=term-missing
+
+# Lint Python code
+lint:
+	@echo "Linting Python code..."
+	python -m flake8 backend/ --max-line-length=100 --ignore=E501,W503
+
+# Type-check Python code
+typecheck:
+	@echo "Type-checking Python code..."
+	python -m mypy backend/ --ignore-missing-imports
