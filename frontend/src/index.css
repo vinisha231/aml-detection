@@ -1,0 +1,32 @@
+/*
+ * frontend/src/index.css
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Global CSS with Tailwind directives.
+ *
+ * These three lines bring in all of Tailwind's utility classes.
+ * @tailwind base      — resets browser defaults (like normalize.css)
+ * @tailwind components — component classes (rarely used; we use utilities)
+ * @tailwind utilities  — all the utility classes: flex, text-lg, bg-red-500, etc.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles */
+body {
+  @apply bg-gray-950 text-gray-100 font-sans;
+  /* Dark background like a real security operations center */
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-900;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded;
+}
