@@ -36,6 +36,21 @@ from backend.database.schema import get_session_factory, get_engine, Account, Si
 
 router = APIRouter(prefix='/export', tags=['export'])
 
+# Characters that make a spreadsheet treat a cell as a formula.
+_FORMULA_TRIGGERS = ('=', '+', '-', '@', '\t', '\r')
+
+
+def _csv_safe(value):
+    """
+    Neutralise CSV/formula injection (CWE-1236). Free-text fields such as
+    holder_name or disposition_note are analyst-controlled and these CSVs are
+    opened in Excel/Sheets; a value like '=HYPERLINK(...)' would execute. Prefix
+    a leading formula trigger with a single quote so the cell stays literal.
+    """
+    if isinstance(value, str) and value and value[0] in _FORMULA_TRIGGERS:
+        return "'" + value
+    return value
+
 
 def get_db():
     engine  = get_engine()
@@ -82,14 +97,14 @@ def export_escalated_accounts(db: Session = Depends(get_db)):
     # Data rows
     for acc in accounts:
         writer.writerow([
-            acc.account_id,
-            acc.holder_name,
-            acc.account_type,
-            acc.branch,
+            _csv_safe(acc.account_id),
+            _csv_safe(acc.holder_name),
+            _csv_safe(acc.account_type),
+            _csv_safe(acc.branch),
             f'{acc.risk_score:.1f}' if acc.risk_score else '',
-            acc.typology or '',
-            acc.evidence or '',
-            acc.disposition_note or '',
+            _csv_safe(acc.typology or ''),
+            _csv_safe(acc.evidence or ''),
+            _csv_safe(acc.disposition_note or ''),
             acc.disposition_at.isoformat() if acc.disposition_at else '',
         ])
 
@@ -134,13 +149,13 @@ def export_signals(db: Session = Depends(get_db)):
 
     for sig in signals:
         writer.writerow([
-            sig.signal_id,
-            sig.account_id,
-            sig.signal_type,
+            _csv_safe(sig.signal_id),
+            _csv_safe(sig.account_id),
+            _csv_safe(sig.signal_type),
             f'{sig.score:.1f}',
             f'{sig.weight:.2f}',
             f'{sig.confidence:.2f}',
-            sig.evidence or '',
+            _csv_safe(sig.evidence or ''),
             sig.created_at.isoformat() if sig.created_at else '',
         ])
 
